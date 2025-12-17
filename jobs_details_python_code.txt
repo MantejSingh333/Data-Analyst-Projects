@@ -1,0 +1,113 @@
+# Import libraries
+from google.colab import files
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib.dates as mdates
+
+
+# Upload CSV file
+uploaded = files.upload()
+file_name = list(uploaded.keys())[0]
+df = pd.read_csv(file_name)
+df.head()
+
+
+# Clean column names and remove empty columns
+df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+df.columns = df.columns.str.strip()
+
+
+# Filter for product
+Product = "FB710"
+
+df['Name'] = df['Name'].fillna('')
+df['Description'] = df['Description'].fillna('')
+
+ProductName = df[
+    df['Name'].str.contains(Product, case=False) |
+    df['Description'].str.contains(Product, case=False)
+]
+
+
+# Convert dates to datetime
+ProductName['CompletedDate_clean'] = pd.to_datetime(ProductName['CompletedDate'], errors='coerce')
+
+
+# Only sort the rows with valid dates
+ProductName = ProductName.sort_values('CompletedDate_clean')
+
+
+# Plot the line graph for Total Cost Over Time
+plt.figure(figsize=(12,6))
+sns.lineplot(data=ProductName, x='CompletedDate_clean', y='Total Cost', marker='o')
+
+ax = plt.gca()
+ax.xaxis.set_major_locator(mdates.YearLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+plt.title("Total Cost Over Time")
+plt.xlabel("Year")
+plt.ylabel("Total Cost")
+plt.grid(True)
+plt.show()
+
+
+# Plot the line graph for Invoiced Value Over Time
+plt.figure(figsize=(12,6))
+sns.lineplot(data=ProductName, x='CompletedDate_clean', y='Invoiced Value', marker='o')
+
+ax = plt.gca()
+ax.xaxis.set_major_locator(mdates.YearLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+plt.title("Invoiced Value Over Time")
+plt.xlabel("Year")
+plt.ylabel("Invoiced Value ExTax")
+plt.grid(True)
+plt.show()
+
+
+# Plot the line graph for Materials Cost Over Time
+plt.figure(figsize=(12,6))
+sns.lineplot(data=ProductName, x='CompletedDate_clean', y='Materials Cost', marker='o')
+
+ax = plt.gca()
+ax.xaxis.set_major_locator(mdates.YearLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+plt.title("Materials Cost Over Time")
+plt.xlabel("Year")
+plt.ylabel("Materials Cost")
+plt.grid(True)
+plt.show()
+
+
+# Plot the line graph for Labor Cost Over Time
+plt.figure(figsize=(12,6))
+sns.lineplot(data=ProductName, x='CompletedDate_clean', y='Labor Cost', marker='o')
+
+ax = plt.gca()
+ax.xaxis.set_major_locator(mdates.YearLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+plt.title("Labor Cost Over Time")
+plt.xlabel("Year")
+plt.ylabel("Labor Cost")
+plt.grid(True)
+plt.show()
+
+
+# Plot the line graph for Labor Hours Over Time
+plt.figure(figsize=(12,6))
+sns.lineplot(data=ProductName, x='CompletedDate_clean', y='Labor Hours', marker='o')
+
+ax = plt.gca()
+ax.xaxis.set_major_locator(mdates.YearLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+
+plt.title("Labor Hours Over Time")
+plt.xlabel("Year")
+plt.ylabel("Labor Hours")
+plt.grid(True)
+plt.show()
